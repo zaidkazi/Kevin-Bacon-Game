@@ -63,12 +63,13 @@ def main():
     load_data(directory)
     print("Data loaded.")
 
-    source = person_id_for_name("Brad Pitt")
+    source = person_id_for_name(input("Name: "))
     if source is None:
         sys.exit("Person not found.")
-    target = person_id_for_name("Hulk Hogan")
+    target = person_id_for_name(input("Name: "))
     if target is None:
         sys.exit("Person not found.")
+    print("Searching!")
 
     path = shortest_path(source, target)
 
