@@ -87,7 +87,7 @@ def main():
 
 
 def shortest_path(source, target):
-    explored = [source]
+    explored = {source}
     queue = QueueFrontier()
     for neighbour in neighbors_for_person(source):
         queue.add(Node(neighbour[1], None, neighbour[0]))
@@ -111,7 +111,7 @@ def shortest_path(source, target):
         if popped_person.state not in explored:
             for neighbour in neighbors_for_person(popped_person.state):
                 queue.add(Node(neighbour[1], popped_person, neighbour[0]))
-                explored.append(popped_person.state)
+                explored.add(popped_person.state)
 
     """
     Returns the shortest list of (movie_id, person_id) pairs
