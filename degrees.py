@@ -63,10 +63,10 @@ def main():
     load_data(directory)
     print("Data loaded.")
 
-    source = person_id_for_name("Tom Cruise")
+    source = person_id_for_name("Brad Pitt")
     if source is None:
         sys.exit("Person not found.")
-    target = person_id_for_name("Jim Carrey")
+    target = person_id_for_name("Hulk Hogan")
     if target is None:
         sys.exit("Person not found.")
 
@@ -86,28 +86,31 @@ def main():
 
 
 def shortest_path(source, target):
-    explored = {source}
-    queue = []
-    queue.extend(neighbors_for_person(source))
+    explored = [source]
+    queue = QueueFrontier()
+    for neighbour in neighbors_for_person(source):
+        queue.add(Node(neighbour[1], None, neighbour[0]))
 
-    while not len(queue) == 0:
-        for person in queue:
-            if person[1] == target:
-                movie = movies[person[0]]
-                print("PERSON FOUND")
-                sys.exit()
-        for x in explored.copy():
-            if x != queue[0][1]:
-                print("searching " + queue[0][1])
-                x = neighbors_for_person(queue[0][1])
-                print(x)
-                queue.extend(x)
-                popped_person = queue.pop(0)
-                explored.add(popped_person[1])
-                print("EXPLORED LIST BELOW")
-                print(explored)
-            else:
-                print("oops we already searched this person!!!!!")
+    while not queue.empty():
+        if queue.contains_state(target):
+            print("PERSON FOUND")
+            for node in queue.frontier:
+                if node.state == target:
+                    path_list = []
+                    if node.parent is None:
+                        path_list.insert(0, (node.action, node.state))
+                        return path_list
+                    else:
+                        while node is not None:
+                            path_list.insert(0, (node.action, node.state))
+                            node = node.parent
+                        return path_list
+
+        popped_person = queue.remove()
+        if popped_person.state not in explored:
+            for neighbour in neighbors_for_person(popped_person.state):
+                queue.add(Node(neighbour[1], popped_person, neighbour[0]))
+                explored.append(popped_person.state)
 
     """
     Returns the shortest list of (movie_id, person_id) pairs
